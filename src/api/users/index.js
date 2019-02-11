@@ -14,6 +14,7 @@ export { schema } from './model'
 
 const router = new Router()
 const {
+  username,
   email,
   password,
   phone,
@@ -24,6 +25,7 @@ const {
 router.post(
   '/',
   body({
+    username,
     email,
     password,
     phone,
