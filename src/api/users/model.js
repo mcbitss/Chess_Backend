@@ -1,6 +1,9 @@
 import mongoose, { Schema } from 'mongoose'
 
 const userSchema = new Schema({
+    username: {
+        type: String
+    },
     email: {
         type: String
     },
@@ -16,6 +19,11 @@ const userSchema = new Schema({
     language: {
         type: String
     },
+    userType:{
+        type: String,
+        default: 'user',
+        enum: ['user', 'admin']
+    }
 }, {
     timestamps: true
 });
@@ -24,11 +32,13 @@ userSchema.methods = {
     view (full) {
       const view = {
         id: this.id,
+        username: this.username,
         email: this.email,
         password: this.password,
         phone: this.phone,
         country: this.country,
-        language: this.language
+        language: this.language,
+        userType: this.userType
       }
       return view;
     }
