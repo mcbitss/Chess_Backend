@@ -14,6 +14,7 @@ import translations from './translations';
 import frequentlyAskedQuestion from './frequentlyAskedQuestions';
 import drivingSchools from './drivingSchools';
 import ratings from './ratings';
+import task from './task';
 
 const router = new Router()
 
@@ -32,5 +33,6 @@ router.use('/translations', translations);
 router.use('/frequentlyaskedquestions', frequentlyAskedQuestion);
 router.use('/drivingSchools', drivingSchools);
 router.use('/ratings', ratings);
+router.use('/task', task);
 
 export default router

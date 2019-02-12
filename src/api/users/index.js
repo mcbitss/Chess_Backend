@@ -7,7 +7,8 @@ import {
   show,
   update,
   destroy,
-  login
+  login,
+  userslist
 } from './controller'
 import { schema } from './model'
 export { schema } from './model'
@@ -50,10 +51,12 @@ router.post(
   login
 )
 
-router.get('/:id',
- show)
+// router.get('/:id',
+//  show)
 
 router.delete('/:id',
  destroy)
+
+router.get('/userlist', userslist);
 
 export default router

@@ -61,4 +61,14 @@ export const destroy = (req, res, next) =>{
   } else {
     res.send({ error: true, message: "Object ID missing" });
   }
-}  
+}
+export const userslist = (req, res, next) => {
+  Users.find({}, (err, resp) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send({ error: false, message: 'fetch success', result: resp });
+    }
+  })
+}
