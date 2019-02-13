@@ -2,7 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 
 const taskmappingSchema = new Schema({
     username: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
     },
     task: {
         type: Schema.Types.ObjectId,
@@ -12,7 +13,8 @@ const taskmappingSchema = new Schema({
         type: Number
     },
     taskStatus: {
-        type: String
+        type: String,
+        enum: ['Assigned', 'Cancelled', 'Completed']
     },
     startDate: {
         type: Date,

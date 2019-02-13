@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { showTasks } from './controller';
+import { createTaskMapped, showTasksMapped, createTaskMappedByUser } from './controller';
 
 const router = new Router();
 
-router.get('/', showTasks);
+router.post('/', createTaskMapped);
+router.get('/', showTasksMapped);
+router.get('/createTaskMappedByUser/:userId', createTaskMappedByUser);
 
 export default router;
