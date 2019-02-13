@@ -21,6 +21,9 @@ const taskmappingSchema = new Schema({
     },
     endDate: {
         type: Date
+    },
+    completedDate: {
+        type: Date
     }
 });
 
