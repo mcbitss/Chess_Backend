@@ -6,6 +6,6 @@ const router = new Router();
 router.post('/', createTaskMapped);
 router.get('/', showTasksMapped);
 router.get('/createTaskMappedByUser/:userId', createTaskMappedByUser);
-router.put('/', update)
+router.put('/', update, createTaskMappedByUser)
 
 export default router;
