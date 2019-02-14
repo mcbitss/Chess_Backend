@@ -14,7 +14,7 @@ const taskmappingSchema = new Schema({
     },
     taskStatus: {
         type: String,
-        enum: ['Assigned', 'Cancelled', 'Completed']
+        enum: ['Assigned', 'Cancelled', 'Completed', 'Upcoming']
     },
     startDate: {
         type: Date,

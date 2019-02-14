@@ -38,7 +38,7 @@ const config = {
   },
   development: {
     mongo: {
-      uri: "mongodb://localhost:27017/chess_dev",
+      uri: "mongodb://chessapp:Abh786raM@mcbitss.dyndns.biz/chess_dev",
       options: {
         debug: true
       }
