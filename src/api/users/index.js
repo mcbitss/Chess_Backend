@@ -46,6 +46,11 @@ router.get(
   index
 )
 
+router.get(
+  '/:id',
+  show
+)
+
 router.post(
   '/login',
   login
