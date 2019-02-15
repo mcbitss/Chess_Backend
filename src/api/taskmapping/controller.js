@@ -10,6 +10,16 @@ export const createTaskMapped = (req, res, next) => {
   });
 }
 
+export const updateTaskMapping = (req, res, next) => {
+  TaskMapping.findOneAndUpdate({ '_id': req.params.id }, req.body, { upsert: false }, (err, resp) => {
+    if (err) {
+
+    } else {
+      showTasksMapped(req, res, next);
+    }
+  });
+}
+
 export const createTaskMappedByUser = (req, res, next) => {
   TaskMapping.findOne({ "username": req.params.userId, 'taskStatus': 'Assigned'}).exec((err, resp) => {
     if (err) {} 

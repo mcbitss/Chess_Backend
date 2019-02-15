@@ -10,6 +10,16 @@ export const create = (req, res, next) => {
   })
 }
 
+export const updateQuestion = (req, res, next) => {
+    Questions.findOneAndUpdate({ '_id': req.params.id }, req.body, { upsert: false }, (err, resp) => {
+      if (err) {
+  
+      } else {
+        show(req, res, next);
+      }
+    });
+  }
+
 export const show = (req, res, next) => {
     Questions.find({}, (err, resp) => {
         if (err) {
