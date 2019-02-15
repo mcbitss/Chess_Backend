@@ -16,7 +16,9 @@ export const login = (req, res, next) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(resp.view())
+        if(resp !== null){
+          res.send(resp.view())
+        }
       }
     }))
 }; 
