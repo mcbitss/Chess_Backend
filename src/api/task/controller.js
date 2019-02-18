@@ -21,7 +21,7 @@ export const updateTask = (req, res, next) => {
 }
 
 export const showTasks = (req, res, next) => {
-  Task.find({}, (err, resp) => {
+  Task.find({}).sort({ _id: -1 }).exec((err, resp) => {
     if (err) {
 
     } else {
