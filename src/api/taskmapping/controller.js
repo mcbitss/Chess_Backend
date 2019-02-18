@@ -58,7 +58,7 @@ export const showCompletedTasksMapped = (req, res, next) => {
 }
 
 export const showTasksMapped = (req, res, next) => {
-    TaskMapping.Task.find({}).sort({ _id: -1 }).exec((err, resp) => {
+    TaskMapping.find({}).sort({ _id: -1 }).exec((err, resp) => {
     if (err) {
 
     } else {
