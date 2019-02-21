@@ -47,7 +47,7 @@ router.get(
 )
 
 router.get(
-  '/:id',
+  '/user/:id',
   show
 )
 
@@ -59,9 +59,9 @@ router.post(
 // router.get('/:id',
 //  show)
 
-router.delete('/:id',
+router.delete('/user/:id',
  destroy)
 
-router.get('/userlist', userslist);
+router.get('/usersList', userslist);
 
 export default router

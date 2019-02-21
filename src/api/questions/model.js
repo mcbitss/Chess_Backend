@@ -23,7 +23,12 @@ const questionSchema = new Schema({
             type: String
           }
         }
-    ]
+    ],
+    status: {
+        type: String,
+        enum: ['Active', 'inActive'],
+        default: 'Active'
+    }
 }, { timestamps: true });
 
 const model = mongoose.model('Quetions', questionSchema);

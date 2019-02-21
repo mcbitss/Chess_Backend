@@ -21,7 +21,7 @@ export const updateTask = (req, res, next) => {
 }
 
 export const showTasks = (req, res, next) => {
-  Task.find({}).sort({ _id: -1 }).exec((err, resp) => {
+  Task.find({ status: 'Active' }).sort({ _id: -1 }).exec((err, resp) => {
     if (err) {
 
     } else {
@@ -68,5 +68,16 @@ export const checkAndInsertBulk = (req, res, next) => {
     res.send({ error: false, message: 'insertion successful', result: duplicatesFound });
   }).catch(() => {
     console.log(promises);
+  })
+}
+
+export const inActiveTask = (req, res, next) => {
+  console.log(req.params);
+  Task.update({ _id: req.params.id },{ status: 'inActive' }, (err, resp) => {
+      if (err) {
+        console.log(err);
+      } else {
+          showTasks(req, res, next);
+      }
   })
 }
