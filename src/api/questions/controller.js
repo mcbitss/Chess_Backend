@@ -10,8 +10,18 @@ export const create = (req, res, next) => {
   })
 }
 
+export const updateQuestion = (req, res, next) => {
+    Questions.findOneAndUpdate({ '_id': req.params.id }, req.body, { upsert: false }, (err, resp) => {
+      if (err) {
+  
+      } else {
+        show(req, res, next);
+      }
+    });
+  }
+
 export const show = (req, res, next) => {
-    Questions.find({}, (err, resp) => {
+    Questions.find({ status: 'Active' }).sort({ _id: -1 }).exec((err, resp) => {
         if (err) {
 
         } else {
@@ -26,6 +36,17 @@ export const getByTaskId = (req, res, next) => {
 
         } else {
             res.send({ error: false, message: 'fetch success', result: resp });
+        }
+    })
+}
+
+export const inActiveQuestion = (req, res, next) => {
+    console.log(req.params);
+    Questions.update({ _id: req.params.id },{ status: 'inActive' }, (err, resp) => {
+        if (err) {
+          console.log(err);
+        } else {
+            show(req, res, next);
         }
     })
 }

@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 const taskSchema = new Schema({
     number: {
-      type: Number
+        type: Number
     },
     name: {
         type: String,
@@ -19,6 +19,11 @@ const taskSchema = new Schema({
     quizAvailable: {
         type: String,
         enum: ['Yes', 'No']
+    },
+    status: {
+        type: String,
+        enum: ['Active', 'inActive'],
+        default: 'Active'
     }
 });
 
