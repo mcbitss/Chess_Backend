@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createTaskMapped, showTasksMapped, updateTaskMapping, bulkAssignment, createTaskMappedByUser, showCompletedTasksMapped, update } from './controller';
+import { createTaskMapped, showTasksMapped, updateTaskMapping, bulkAssignment, createTaskMappedByUser, showCompletedTasksMapped, update, showTasksMappedToUser, createTaskByUserMapping } from './controller';
 
 const router = new Router();
 
