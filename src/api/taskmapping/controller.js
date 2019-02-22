@@ -47,6 +47,16 @@ export const showCompletedTasksMapped = (req, res, next) => {
 });
 }
 
+export const showTasksMappedToUser = (req, res, next) => {
+  TaskMapping.find({ "username": req.params.userId}).sort({'sequencenumber': 1}).populate('task').exec((err, resp) => {
+  if (err) {
+
+  } else {
+    res.send({ error: false, message: 'fetch success', result: resp });
+  }
+});
+}
+
 export const showTasksMapped = (req, res, next) => {
     TaskMapping.find({}, (err, resp) => {
     if (err) {
@@ -72,3 +82,39 @@ export const update = (req, res, next) => {
     }
   });  
 }
+
+export const createTaskByUserMapping = (req, res, next) => {
+  const { body } = req;
+  const promises = body.users.map(user => {
+    return new Promise((resolve, reject) => {
+      TaskMapping.find({ "username": user}, (err, resp) => {
+        if (err) {
+          reject(err);
+        } else {
+          const valueData = resp.map(val => val.task);
+			    const tasks = body.tasks.filter((val) => {
+            const flag = valueData.find(obj => obj.toString() === val.toString());
+            if(!flag){
+              return val
+            }
+          })
+          const updatedtasks = tasks.map((task, ind) => { return {user: user, task: task, sequencenumber: (valueData.length + ind + 1)}})
+          resolve(updatedtasks);
+        }
+      });    
+    });
+  })
+  Promise.all(promises).then((userTasks) => {
+   userTasks.map((tasks) => {
+    tasks.map((data) => {
+      TaskMapping.create({'username': data.user, task: data.task, 'sequencenumber': data.sequencenumber, 'startDate': new Date()}, (err, resp) => {
+        if (err) {
+        } else {
+          // res.send(resp)
+        }
+      });
+    })
+   })
+  });
+}
+
