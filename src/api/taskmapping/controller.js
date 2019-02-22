@@ -1,13 +1,21 @@
 import TaskMapping from './model';
 
 export const createTaskMapped = (req, res, next) => {
-  TaskMapping.create(req.body, (err, resp) => {
-    if (err) {
-
-    } else {
-      showTasksMapped(req, res, next);
-    }
-  });
+  TaskMapping.find({ username: req.body.username, taskStatus: { $in: ['Upcoming', 'Assigned'] } }).sort({ sequencenumber: -1 }).exec().then((resp) => {
+     if (resp.length === 0) {
+       req.body.sequencenumber = 1;
+       req.body.taskStatus = 'Assigned';
+     } else {
+       req.body.sequencenumber = resp[0].sequencenumber + 1;
+     }
+     TaskMapping.create(req.body, (err, resp) => {
+      if (err) {
+  
+      } else {
+        showTasksMapped(req, res, next);
+      }
+    });
+  })
 }
 
 export const updateTaskMapping = (req, res, next) => {
@@ -81,4 +89,14 @@ export const update = (req, res, next) => {
       });  
     }
   });  
+}
+
+export const bulkAssignment = (req, res, next) => {
+  TaskMapping.insertMany(req.body, (err, resp) => {
+    if (err) {
+
+    } else {
+      showTasksMapped(req, res, next);
+    }
+  })
 }
