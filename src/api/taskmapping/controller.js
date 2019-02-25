@@ -30,7 +30,7 @@ export const updateTaskMapping = (req, res, next) => {
 
 export const createTaskMappedByUser = (req, res, next) => {
   const user = req.params.userId ? req.params.userId : req.body.username;
-  TaskMapping.findOne({ "username": user, 'taskStatus': 'Assigned'}).exec((err, resp) => {
+  TaskMapping.findOne({ "username": user, 'taskStatus': 'Assigned'}).sort({'sequencenumber': 1}).exec((err, resp) => {
     if (err) {} 
     else {
       if(resp === null){
@@ -109,14 +109,20 @@ export const createTaskByUserMapping = (req, res, next) => {
         if (err) {
           reject(err);
         } else {
-          const valueData = resp.map(val => val.task);
+          let statusFlag = false;
+          const valueData = resp.map((val) => {
+            if(val.taskStatus === 'Assigned'){
+              statusFlag = true
+            }
+            return val.task
+          });
 			    const tasks = body.tasks.filter((val) => {
             const flag = valueData.find(obj => obj.toString() === val.toString());
             if(!flag){
               return val
             }
           })
-          const updatedtasks = tasks.map((task, ind) => { return {user: user, task: task, sequencenumber: (valueData.length + ind + 1)}})
+          const updatedtasks = tasks.map((task, ind) => { return {user: user, task: task, sequencenumber: (valueData.length + ind + 1), taskStatus: !statusFlag && ind === 0 ? 'Assigned' : 'Upcoming'}})
           resolve(updatedtasks);
         }
       });    
@@ -125,7 +131,7 @@ export const createTaskByUserMapping = (req, res, next) => {
   Promise.all(promises).then((userTasks) => {
    userTasks.map((tasks) => {
     tasks.map((data) => {
-      TaskMapping.create({'username': data.user, task: data.task, 'sequencenumber': data.sequencenumber, 'startDate': new Date()}, (err, resp) => {
+      TaskMapping.create({'username': data.user, task: data.task, 'sequencenumber': data.sequencenumber, 'startDate': new Date(), taskStatus: data.taskStatus}, (err, resp) => {
         if (err) {
         } else {
           // res.send(resp)
