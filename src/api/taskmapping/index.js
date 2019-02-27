@@ -1,10 +1,14 @@
 import { Router } from 'express';
-import { createTaskMapped, showTasksMapped, updateTaskMapping, bulkAssignment, createTaskMappedByUser, showCompletedTasksMapped, update, showTasksMappedToUser, createTaskByUserMapping } from './controller';
+import { createTaskMapped, showTasksMapped,
+    updateTaskMapping, bulkAssignment, createTaskMappedByUser, fetchUsersAssignment,
+    showCompletedTasksMapped, update, showTasksMappedToUser, createTaskByUserMapping 
+} from './controller';
 
 const router = new Router();
 
 router.post('/', createTaskMapped);
 router.post('/bulkAssignment', bulkAssignment);
+router.post('/fetchUsersAssignment', fetchUsersAssignment);
 router.get('/', showTasksMapped);
 router.get('/createTaskMappedByUser/:userId', createTaskMappedByUser);
 router.put('/updateTaskMapping/:id', updateTaskMapping);

@@ -142,12 +142,24 @@ export const createTaskByUserMapping = (req, res, next) => {
   });
 }
 
-export const bulkAssignment = (req, res, next) => {
-  TaskMapping.insertMany(req.body, (err, resp) => {
+export const fetchUsersAssignment = (req, res, next) => {
+  TaskMapping.find({ username: { $in: req.body }, taskStatus: { $in: ['Assigned', 'Upcoming']}}).populate('task').exec((err, result) => {
     if (err) {
-
+      res.send({ error: true, messgage: '', result: [] });
     } else {
-      showTasksMapped(req, res, next);
+      res.send({ error: false, messgage: 'fetch successful', result });
     }
-  })
+  });
+}
+
+export const bulkAssignment = (req, res, next) => {
+  TaskMapping.deleteMany({ username: req.body[0].username, taskStatus: { $in: ['Assigned', 'Upcoming'] }}, (err, resp) => {
+    TaskMapping.insertMany(req.body, (err, resp) => {
+      if (err) {
+  
+      } else {
+        showTasksMapped(req, res, next);
+      }
+    });
+  });
 }
