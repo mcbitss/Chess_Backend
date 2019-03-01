@@ -1,4 +1,5 @@
 import TaskMapping from './model';
+import Task from '../task/model';
 
 export const createTaskMapped = (req, res, next) => {
   TaskMapping.find({ username: req.body.username, taskStatus: { $in: ['Upcoming', 'Assigned'] } }).sort({ sequencenumber: -1 }).exec().then((resp) => {
@@ -105,25 +106,25 @@ export const createTaskByUserMapping = (req, res, next) => {
   const { body } = req;
   const promises = body.users.map(user => {
     return new Promise((resolve, reject) => {
-      TaskMapping.find({ "username": user}, (err, resp) => {
+      TaskMapping.find({ "username": user, $or: [ { taskStatus: 'Completed' }, { taskStatus: 'Cancelled'} ] }, (err, resp) => {
         if (err) {
           reject(err);
         } else {
-          let statusFlag = false;
-          const valueData = resp.map((val) => {
-            if(val.taskStatus === 'Assigned'){
-              statusFlag = true
+          Task.find({'_id' : {$in: body.tasks}}).sort({ number: 1 }).exec((err, taskData) => {
+            if (err) {
+            } else {
+              TaskMapping.remove({username :user}, (err, respData) => {
+                if (err) {}
+                else {}
+              });
+              const updatedtasks = resp.map((data, ind) => { 
+                data.sequencenumber = ind + 1;
+                return data
+              });
+              taskData.map((task, ind) => { updatedtasks.push({username: user, task: task._id, sequencenumber: (updatedtasks.length + 1), taskStatus: ind === 0 ? 'Assigned' : 'Upcoming'})})
+              resolve(updatedtasks);
             }
-            return val.task
           });
-			    const tasks = body.tasks.filter((val) => {
-            const flag = valueData.find(obj => obj.toString() === val.toString());
-            if(!flag){
-              return val
-            }
-          })
-          const updatedtasks = tasks.map((task, ind) => { return {user: user, task: task, sequencenumber: (valueData.length + ind + 1), taskStatus: !statusFlag && ind === 0 ? 'Assigned' : 'Upcoming'}})
-          resolve(updatedtasks);
         }
       });    
     });
@@ -131,7 +132,7 @@ export const createTaskByUserMapping = (req, res, next) => {
   Promise.all(promises).then((userTasks) => {
    userTasks.map((tasks) => {
     tasks.map((data) => {
-      TaskMapping.create({'username': data.user, task: data.task, 'sequencenumber': data.sequencenumber, 'startDate': new Date(), taskStatus: data.taskStatus}, (err, resp) => {
+      TaskMapping.create({'username': data.username, task: data.task, 'sequencenumber': data.sequencenumber, 'startDate': new Date(), taskStatus: data.taskStatus}, (err, resp) => {
         if (err) {
         } else {
           // res.send(resp)
