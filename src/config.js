@@ -38,7 +38,7 @@ const config = {
   },
   development: {
     mongo: {
-      uri: "mongodb://DLAPP:Abh786raM@mcbitsshyd.dyndns.biz:27017/DL_DEV",
+      uri: "mongodb://DLAPP:Abh786raM@mcbhyd@mcbitsstech.com:27017/DL_DEV",
       options: {
         debug: true
       }
