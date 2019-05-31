@@ -7,13 +7,15 @@ import {
   show,
   update,
   destroy,
-  login
+  login,
+  userslist
 } from './controller'
 import { schema } from './model'
 export { schema } from './model'
 
 const router = new Router()
 const {
+  username,
   email,
   password,
   phone,
@@ -24,6 +26,7 @@ const {
 router.post(
   '/',
   body({
+    username,
     email,
     password,
     phone,
@@ -43,15 +46,22 @@ router.get(
   index
 )
 
+router.get(
+  '/user/:id',
+  show
+)
+
 router.post(
   '/login',
   login
 )
 
-router.get('/:id',
- show)
+// router.get('/:id',
+//  show)
 
-router.delete('/:id',
+router.delete('/user/:id',
  destroy)
+
+router.get('/usersList', userslist);
 
 export default router
