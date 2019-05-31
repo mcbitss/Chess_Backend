@@ -38,7 +38,7 @@ const config = {
   },
   development: {
     mongo: {
-      uri: 'mongodb://chessapp:Abh786raM@mcbitss.dyndns.biz/chess',
+      uri: 'mongodb://chessapp:Abh786raM@mcbhyd@mcbitsstech.com/chess',
       options: {
         debug: true
       }
