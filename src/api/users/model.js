@@ -1,50 +1,78 @@
-import mongoose, { Schema } from 'mongoose'
+import bcrypt from 'bcrypt';
+import mongoose, { Schema } from 'mongoose';
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     username: {
-        type: String
+      type: String
     },
     email: {
-        type: String
+      type: String
     },
     password: {
-        type: String
+      type: String,
+      required: true,
+      minlength: 6
     },
     phone: {
-        type: Number
+      type: Number
     },
     country: {
-        type: String
+      type: String
     },
     language: {
-        type: String
+      type: String
     },
-    userType:{
-        type: String,
-        default: 'user',
-        enum: ['user', 'admin']
+    userType: {
+      type: String,
+      default: 'user',
+      enum: ['user', 'admin']
     }
-}, {
+  },
+  {
     timestamps: true
+  }
+);
+
+userSchema.pre('save', function(next) {
+  if (!this.isModified('password')) return next();
+
+  /* istanbul ignore next */
+  const rounds = env === 'test' ? 1 : 9;
+
+  bcrypt
+    .hash(this.password, rounds)
+    .then(hash => {
+      this.password = hash;
+      next();
+    })
+    .catch(next);
 });
 
 userSchema.methods = {
-    view (full) {
-      const view = {
-        id: this.id,
-        username: this.username,
-        email: this.email,
-        password: this.password,
-        phone: this.phone,
-        country: this.country,
-        language: this.language,
-        userType: this.userType
-      }
-      return view;
-    }
+  view(full) {
+    const view = {
+      id: this.id,
+      username: this.username,
+      email: this.email,
+      password: this.password,
+      phone: this.phone,
+      country: this.country,
+      language: this.language,
+      userType: this.userType
+    };
+    return view;
+  },
+
+  authenticate(password) {
+    // console.log(password, this.password)
+    return bcrypt
+      .compare(password, this.password)
+      .then(valid => (valid ? this : false));
   }
+};
 
-const model = mongoose.model('Users', userSchema)
+const model = mongoose.model('Users', userSchema);
 
-export const schema = model.schema
-export default model
+export const schema = model.schema;
+export default model;
