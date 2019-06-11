@@ -2,9 +2,11 @@ import Users from '../users/model';
 import { sign } from '../../services/jwt';
 
 export const loginUser = (req, res, next) => {
-  const user = req.body.username;
+  console.log('************', req.body);
+
+  const email = req.body.email;
   let password = req.body.password;
-  Users.findOne({ username: user }).exec((err, user) => {
+  Users.findOne({ email: email }).exec((err, user) => {
     if (err) {
       res.send({
         user,
