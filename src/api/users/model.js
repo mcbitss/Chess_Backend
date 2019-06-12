@@ -37,8 +37,8 @@ const userSchema = new Schema(
 userSchema.pre('save', function(next) {
   if (!this.isModified('password')) return next();
 
-  /* istanbul ignore next */
-  const rounds = env === 'test' ? 1 : 9;
+  // const rounds = env === 'test' ? 1 : 9;
+  const rounds = 9;
 
   bcrypt
     .hash(this.password, rounds)
@@ -65,7 +65,6 @@ userSchema.methods = {
   },
 
   authenticate(password) {
-    // console.log(password, this.password)
     return bcrypt
       .compare(password, this.password)
       .then(valid => (valid ? this : false));
