@@ -1,12 +1,28 @@
 import Users from './model';
+import md5 from 'md5';
 import { success, notFound } from '../../services/response/';
+import EmailNotify from '../../services/notifications/notify/resetpassword';
 
-export const create = ({ bodymen: { body } }, res, next) => {
-  Users.create(body, (err, result) => {
+// const objId = '_id';
+
+// export const create = ({ bodymen: { body } }, res, next) => {
+//   Users.create(body, (err, result) => {
+//     if (err) {
+//       res.send(err);
+//     } else {
+//       res.send(result);
+//     }
+//   });
+// };
+
+export const create = (req, res, next) => {
+  const user = req.body;
+  user.password = md5(user.password);
+  Users.create(user, (err, resp) => {
     if (err) {
       res.send(err);
     } else {
-      res.send(result);
+      res.send(resp.view());
     }
   });
 };
@@ -74,4 +90,72 @@ export const userslist = (req, res, next) => {
       res.send({ error: false, message: 'fetch success', result: resp });
     }
   });
+};
+
+export const updatePassword = (req, res, next) => {
+  Users.findById(req.params.id)
+    .then(user => {
+      if (!user) {
+        return null;
+      }
+      return user;
+    })
+    .then(user =>
+      user ? user.set({ password: req.body.password }).save() : null
+    )
+    .then(user => (user ? user.view(true) : null))
+    .catch(next);
+};
+
+// export const forgetPassword = (req, res, next) => {
+//   console.log(req.body, req.params.id, '***********');
+// Users.findById(req.params.id)
+//   .then(user => {
+//     if (!user) {
+//       return null;
+//     }
+//     return user;
+//   })
+//   .then(user =>
+//     user ? user.set({ password: req.body.password }).save() : null
+//   )
+//   .then(user => (user ? user.view(true) : null))
+//   .catch(next);
+// }
+export const forgetPassword = async (req, res) => {
+  console.log(req.body, '***********');
+  try {
+    // const token = await generateUUID();
+    const user = await Users.findOne({ email: req.body.email });
+    const notification = await EmailNotify(req.body.email);
+    console.log(notification, 'ppppppppppp');
+    //   if (notification.hasError) {
+    //     return res.send({
+    //       error: false,
+    //       message: Messages["UNABLETO_SEND_MAIL"]
+    //     });
+    //   }
+    //   if (user.length === 0) {
+    //     return res.send({
+    //       error: false,
+    //       message: Messages["MAIL_DOESNT_EXIST"]
+    //     });
+    //   } else {
+    //     ForgetPassword.create({
+    //       token,
+    //       email: user.email,
+    //       userType: user.userType,
+    //       userId: user._id
+    //     });
+    //     return res.send({
+    //       error: false,
+    //       message: Messages["MAIL_RESET_PASSWORD"]
+    //     });
+    //   }
+  } catch (error) {
+    return res.send({
+      error: true,
+      message: 'INTERNAL_SERVER_ERROR'
+    });
+  }
 };
