@@ -5,16 +5,6 @@ import EmailNotify from '../../services/notifications/notify/resetpassword';
 
 // const objId = '_id';
 
-// export const create = ({ bodymen: { body } }, res, next) => {
-//   Users.create(body, (err, result) => {
-//     if (err) {
-//       res.send(err);
-//     } else {
-//       res.send(result);
-//     }
-//   });
-// };
-
 export const create = (req, res, next) => {
   const user = req.body;
   user.password = md5(user.password);
@@ -59,13 +49,20 @@ export const update = (req, res, next) => {
   const { body } = req;
   Users.findByIdAndUpdate(
     body.id,
-    body,
+    req.body,
     { upsert: false, new: true },
     (err, result) => {
       if (err) {
-        res.send(err);
+        res.send({
+          error: true,
+          message: 'Something went wrong, please try again'
+        });
       } else {
-        res.send(result.view());
+        res.send({
+          error: false,
+          message: 'Update success..!',
+          user: result.view()
+        });
       }
     }
   );
