@@ -104,51 +104,49 @@ export const updatePassword = (req, res, next) => {
     .catch(next);
 };
 
-// export const forgetPassword = (req, res, next) => {
-//   console.log(req.body, req.params.id, '***********');
-// Users.findById(req.params.id)
-//   .then(user => {
-//     if (!user) {
-//       return null;
-//     }
-//     return user;
-//   })
-//   .then(user =>
-//     user ? user.set({ password: req.body.password }).save() : null
-//   )
-//   .then(user => (user ? user.view(true) : null))
-//   .catch(next);
-// }
 export const forgetPassword = async (req, res) => {
-  console.log(req.body, '***********');
+  // console.log(req.body, '***********');
   try {
     // const token = await generateUUID();
     const user = await Users.findOne({ email: req.body.email });
-    const notification = await EmailNotify(req.body.email);
-    console.log(notification, 'ppppppppppp');
-    //   if (notification.hasError) {
-    //     return res.send({
-    //       error: false,
-    //       message: Messages["UNABLETO_SEND_MAIL"]
-    //     });
-    //   }
-    //   if (user.length === 0) {
-    //     return res.send({
-    //       error: false,
-    //       message: Messages["MAIL_DOESNT_EXIST"]
-    //     });
-    //   } else {
-    //     ForgetPassword.create({
-    //       token,
-    //       email: user.email,
-    //       userType: user.userType,
-    //       userId: user._id
-    //     });
-    //     return res.send({
-    //       error: false,
-    //       message: Messages["MAIL_RESET_PASSWORD"]
-    //     });
-    //   }
+    if (user) {
+      const notification = await EmailNotify(req.body.email);
+      // console.log(notification, 'ppppppppppp');
+      if (notification.hasError) {
+        return res.send({
+          error: true,
+          message: 'Unable to send Mail, please contact admin'
+        });
+      } else {
+        return res.send({
+          error: false,
+          message: 'An Email has been sent please check'
+        });
+      }
+    } else {
+      return res.send({
+        error: true,
+        message: 'Mail does not exists'
+      });
+    }
+
+    // if (user) {
+    //   return res.send({
+    //     error: false,
+    //     message: Messages['MAIL_DOESNT_EXIST']
+    //   });
+    // } else {
+    //   ForgetPassword.create({
+    //     token,
+    //     email: user.email,
+    //     userType: user.userType,
+    //     userId: user._id
+    //   });
+    //   return res.send({
+    //     error: false,
+    //     message: Messages['MAIL_RESET_PASSWORD']
+    //   });
+    // }
   } catch (error) {
     return res.send({
       error: true,
