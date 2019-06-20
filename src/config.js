@@ -39,7 +39,7 @@ const config = {
   development: {
     mongo: {
       uri: 'mongodb://chessapp:Abh786raM@mcbitsstech.com/chess',
-      resetPassword: 'http://localhost:8081/#/',
+      // resetPassword: 'http://localhost:8081/#/',
       options: {
         debug: true
       }
