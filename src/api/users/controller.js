@@ -18,7 +18,7 @@ export const create = (req, res, next) => {
 };
 
 export const login = (req, res, next) => {
-  Users.findOne(req.body, (err, resp) => {
+  Users.findOne(req.body.email, (err, resp) => {
     if (err) {
       res.send(err);
     } else {
