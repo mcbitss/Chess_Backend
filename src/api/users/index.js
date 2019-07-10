@@ -1,5 +1,6 @@
-import { Router } from 'express'
-import { middleware as body } from 'bodymen'
+import { Router } from 'express';
+import { middleware as body } from 'bodymen';
+import { password as passwordAuth } from '../../services/passport';
 
 import {
   create,
@@ -7,51 +8,43 @@ import {
   show,
   update,
   destroy,
-  login
-} from './controller'
-import { schema } from './model'
-export { schema } from './model'
+  login,
+  userslist,
+  updatePassword,
+  forgetPassword
+} from './controller';
+import { schema } from './model';
+export { schema } from './model';
 
-const router = new Router()
-const {
-  email,
-  password,
-  phone,
-  country,
-  language
-} = schema.tree
+const router = new Router();
+const { username, email, password, phone, country, language } = schema.tree;
 
 router.post(
   '/',
-  body({
-    email,
-    password,
-    phone,
-    country,
-    language
-  }),
+  // body({
+  //   username,
+  //   email,
+  //   password,
+  //   phone,
+  //   country,
+  //   language
+  // }),
   create
-)
+);
 
-router.put(
-  '/',
-  update
-)
+router.put('/', update);
 
-router.get(
-  '/',
-  index
-)
+router.get('/', index);
 
-router.post(
-  '/login',
-  login
-)
+router.get('/user/:id', show);
 
-router.get('/:id',
- show)
+router.post('/login', login);
 
-router.delete('/:id',
- destroy)
+router.delete('/user/:id', destroy);
 
-export default router
+router.get('/usersList', userslist);
+
+router.put('/changepassword/:id', updatePassword);
+
+router.put('/forgetpassword', forgetPassword);
+export default router;
