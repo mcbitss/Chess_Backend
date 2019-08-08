@@ -37,7 +37,7 @@ export const show = ({ params }, res, next) =>
     .catch(next);
 
 export const index = (req, res, next) => {
-  Users.find({}, {}, { sort: { year: 1 } })
+  Users.find({ userType: 'user' }, {}, { sort: { year: 1 } })
     .then(users => users.map(yearly => yearly.view()))
     .then(success(res))
     .catch(next);
