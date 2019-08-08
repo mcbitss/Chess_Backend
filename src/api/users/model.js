@@ -34,20 +34,20 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.pre('save', function(next) {
-  if (!this.isModified('password')) return next();
+// userSchema.pre('save', function (next) {
+//   if (!this.isModified('password')) return next();
 
-  // const rounds = env === 'test' ? 1 : 9;
-  const rounds = 9;
+//   // const rounds = env === 'test' ? 1 : 9;
+//   const rounds = 9;
 
-  bcrypt
-    .hash(this.password, rounds)
-    .then(hash => {
-      this.password = hash;
-      next();
-    })
-    .catch(next);
-});
+//   bcrypt
+//     .hash(this.password, rounds)
+//     .then(hash => {
+//       this.password = hash;
+//       next();
+//     })
+//     .catch(next);
+// });
 
 userSchema.methods = {
   view(full) {
@@ -64,11 +64,12 @@ userSchema.methods = {
     return view;
   },
 
-  authenticate(password) {
-    return bcrypt
-      .compare(password, this.password)
-      .then(valid => (valid ? this : false));
-  }
+  // authenticate(password) {
+  //   return bcrypt
+  //     .compare(password, this.password)
+  //     .then(valid => (valid ? this : false))
+  //     .catch(err => console.log(err));
+  // }
 };
 
 const model = mongoose.model('Users', userSchema);
