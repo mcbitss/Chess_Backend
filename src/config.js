@@ -28,6 +28,8 @@ const config = {
     apiRoot: process.env.API_ROOT || '',
     masterKey: requireProcessEnv('MASTER_KEY'),
     jwtSecret: requireProcessEnv('JWT_SECRET'),
+    SMTP_USER: requireProcessEnv('SMTP_USER'),
+    SMTP_PW: requireProcessEnv('SMTP_PW'),
     mongo: {
       options: {
         db: {

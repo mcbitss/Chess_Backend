@@ -17,6 +17,9 @@ const taskSchema = new Schema({
   content: {
     type: String
   },
+  fileType: {
+    type: String
+  },
   quizAvailable: {
     type: String,
     enum: ['Yes', 'No']

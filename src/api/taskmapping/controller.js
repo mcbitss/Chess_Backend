@@ -1,6 +1,6 @@
 import TaskMapping from './model';
 import Task from '../task/model';
-import { findIndex, remove, maxBy } from 'lodash';
+import { remove, maxBy } from 'lodash';
 
 export const createTaskMapped = (req, res, next) => {
   TaskMapping.find({
@@ -190,6 +190,7 @@ export const createTaskByUserMapping = (req, res, next) => {
                     return null;
                   });
                   let counter = 1;
+                  let obj = {};
                   taskData.map((task, ind) => {
                     let maxSequencceNumber = 0;
                     if (objectWithUserKeysForSequenceNumber[user]) {
@@ -198,15 +199,22 @@ export const createTaskByUserMapping = (req, res, next) => {
                         'sequencenumber'
                       );
                       maxSequencceNumber = maxSequencceNumberObj.sequencenumber;
+                      obj = objectWithUserKeysForSequenceNumber[user].find(
+                        o => o.taskStatus === 'Assigned'
+                      );
+                      console.log(obj, 'obj');
                     }
                     updatedtasks.push({
                       username: user,
                       task: task._id,
                       sequencenumber: maxSequencceNumber + counter,
-                      taskStatus: ind === 0 ? 'Assigned' : 'Upcoming'
+                      taskStatus:
+                        Object.keys(obj).length === 0 ? 'Assigned' : 'Upcoming'
                     });
                     counter += 1;
                   });
+
+                  console.log(updatedtasks, 'updatedtasks');
                   resolve(updatedtasks);
                 }
               });
@@ -224,8 +232,7 @@ export const createTaskByUserMapping = (req, res, next) => {
             task: data.task,
             sequencenumber: data.sequencenumber,
             startDate: new Date(),
-            taskStatus:
-              data.taskStatus === 'Assigned' ? 'Upcoming' : data.taskStatus
+            taskStatus: data.taskStatus
           },
           (err, resp) => {
             if (err) {

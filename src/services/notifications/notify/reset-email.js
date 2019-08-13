@@ -1,24 +1,24 @@
 import nodemailer from 'nodemailer';
-// import { accountEmail, accountPassword } from '../../../config';
+import { SMTP_USER, SMTP_PW } from '../../../config';
 import ResetVerificationTemplate from '../templates/forgetPassword-verification';
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
-  host: 'smtp.office365.com',
-  port: '587',
-  secureConnection: false,
+  host: 'smtp.gmail.com',
+  port: 465,
+  secureConnection: true,
   auth: {
-    user: 'dltwired@mcbitss.com', // generated ethereal user
-    pass: 'Mcbitss100%' // generated ethereal password
+    user: SMTP_USER,
+    pass: SMTP_PW
   },
-  tls: { ciphers: 'SSLv3' }
+  tls: { rejectUnauthorized: false }
 });
 
 export const resetPasswordConfirmationEmail = ({ email, url }) => {
   return new Promise(resolve => {
     // setup email data with unicode symbols
     let mailOptions = {
-      from: '"Chess App" <dltwired@mcbitss.com>', // sender address
+      from: '"Chess App" <chessapp@mcbitss.com>', // sender address
       to: email, // list of receivers
       subject: 'Welcome to Chess App Portal: Reset Your Password', // Subject line
       html: ResetVerificationTemplate(url)

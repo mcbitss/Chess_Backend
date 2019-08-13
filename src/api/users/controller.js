@@ -43,7 +43,7 @@ export const index = (req, res, next) => {
     .catch(next);
 };
 
-export const applicationDashboardData = (req, res, next) => { };
+export const applicationDashboardData = (req, res, next) => {};
 
 export const update = (req, res, next) => {
   const { body } = req;
@@ -90,30 +90,29 @@ export const userslist = (req, res, next) => {
 };
 
 export const updatePassword = (req, res, next) => {
-  Users.findById(req.params.id)
-    .then(user => {
-      if (user) {
-        Users.findByIdAndUpdate(
-          req.params.id,
-          { password: req.body.password },
-          { upsert: false, new: false },
-          (err, result) => {
-            if (err) {
-              res.send({
-                error: true,
-                message: 'Something went wrong, please try again'
-              });
-            } else {
-              res.send({
-                error: false,
-                message: 'Password Updated',
-                user: user.view()
-              });
-            }
+  Users.findById(req.params.id).then(user => {
+    if (user) {
+      Users.findByIdAndUpdate(
+        req.params.id,
+        { password: req.body.password },
+        { upsert: false, new: false },
+        (err, result) => {
+          if (err) {
+            res.send({
+              error: true,
+              message: 'Something went wrong, please try again'
+            });
+          } else {
+            res.send({
+              error: false,
+              message: 'Password Updated',
+              user: user.view()
+            });
           }
-        );
-      }
-    })
+        }
+      );
+    }
+  });
 };
 
 export const forgetPassword = async (req, res) => {
