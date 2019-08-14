@@ -22,7 +22,23 @@ export const createTask = (req, res, next) => {
           (err, result) => {
             if (err) {
             } else {
-              showTasks(req, res, next);
+              Task.findOneAndUpdate(
+                { _id: resp._id },
+                {
+                  $set: {
+                    content: `http://localhost:9000/assets/${resp._id}.${
+                      req.body.fileType
+                    }`
+                  }
+                },
+                { new: true },
+                (err, result) => {
+                  if (err) {
+                  } else {
+                    showTasks(req, res, next);
+                  }
+                }
+              );
             }
           }
         );
@@ -151,33 +167,4 @@ export const inActiveTask = (req, res, next) => {
       showTasks(req, res, next);
     }
   });
-};
-
-export const getFile = (req, res, next) => {
-  if (req.params.taskType === 'Video') {
-    const base64 = fs.readFileSync(
-      `${__dirname}/temp/${req.params.id}.${req.params.fileType}`,
-      {
-        encoding: 'base64'
-      }
-    );
-    res.send({
-      error: false,
-      message: 'fetch success',
-      result: `data:video/${req.params.fileType};base64,${base64}`
-    });
-  }
-  if (req.params.taskType === 'Document') {
-    const base64 = fs.readFileSync(
-      `${__dirname}/temp/${req.params.id}.${req.params.fileType}`,
-      {
-        encoding: 'base64'
-      }
-    );
-    res.send({
-      error: false,
-      message: 'fetch success',
-      result: `data:application/pdf;base64,${base64}`
-    });
-  }
 };
