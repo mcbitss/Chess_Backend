@@ -11,7 +11,8 @@ import {
   login,
   userslist,
   updatePassword,
-  forgetPassword
+  forgetPassword,
+  resetpassword
 } from './controller';
 import { schema } from './model';
 export { schema } from './model';
@@ -47,4 +48,6 @@ router.get('/usersList', userslist);
 router.put('/changepassword/:id', updatePassword);
 
 router.put('/forgetpassword', forgetPassword);
+
+router.post('/resetpassword', resetpassword);
 export default router;

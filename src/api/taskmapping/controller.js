@@ -145,7 +145,6 @@ export const update = (req, res, next) => {
 };
 
 export const createTaskByUserMapping = (req, res, next) => {
-  console.log(req.body, 'req.body');
   const { body } = req;
   const promises = body.users.map(user => {
     return new Promise((resolve, reject) => {
@@ -163,15 +162,11 @@ export const createTaskByUserMapping = (req, res, next) => {
               .exec(async (err, taskData) => {
                 if (err) {
                 } else {
-                  // TaskMapping.remove({ username: user }, (err, respData) => {
-                  //   if (err) {
-                  //   } else {
-                  //   }
+                  // const updatedtasks = resp.map((data, ind) => {
+                  //   data.sequencenumber = ind + 1;
+                  //   return data;
                   // });
-                  const updatedtasks = resp.map((data, ind) => {
-                    data.sequencenumber = ind + 1;
-                    return data;
-                  });
+                  const updatedtasks = [];
                   const allMappings = await TaskMapping.find({});
                   const objectWithUserKeysForSequenceNumber = {};
                   allMappings.map(sequenceNumberObject => {
@@ -202,14 +197,13 @@ export const createTaskByUserMapping = (req, res, next) => {
                       obj = objectWithUserKeysForSequenceNumber[user].find(
                         o => o.taskStatus === 'Assigned'
                       );
-                      console.log(obj, 'obj');
                     }
+                    console.log(obj, 'obj');
                     updatedtasks.push({
                       username: user,
                       task: task._id,
                       sequencenumber: maxSequencceNumber + counter,
-                      taskStatus:
-                        Object.keys(obj).length === 0 ? 'Assigned' : 'Upcoming'
+                      taskStatus: !obj && ind === 0 ? 'Assigned' : 'Upcoming'
                     });
                     counter += 1;
                   });
@@ -243,6 +237,7 @@ export const createTaskByUserMapping = (req, res, next) => {
         );
       });
     });
+    res.send(userTasks);
   });
 };
 
