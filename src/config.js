@@ -30,7 +30,9 @@ const config = {
     jwtSecret: requireProcessEnv('JWT_SECRET'),
     SMTP_USER: requireProcessEnv('SMTP_USER'),
     SMTP_PW: requireProcessEnv('SMTP_PW'),
-    BASE_URL: requireProcessEnv('BASE_URL'),
+    BASE_URL: process.env.NODE_ENV
+      ? requireProcessEnv('BASE_URL_PROD')
+      : requireProcessEnv('BASE_URL_DEV'),
     mongo: {
       options: {
         db: {

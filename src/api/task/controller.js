@@ -27,7 +27,7 @@ export const createTask = (req, res, next) => {
                 { _id: resp._id },
                 {
                   $set: {
-                    content: `${BASE_URL}${resp._id}.${req.body.fileType}`
+                    content: `${BASE_URL}assets/${resp._id}.${req.body.fileType}`
                   }
                 },
                 { new: true },
