@@ -11,10 +11,10 @@ router.post('/bulkAssignment', bulkAssignment);
 router.post('/fetchUsersAssignment', fetchUsersAssignment);
 router.get('/', showTasksMapped);
 router.get('/createTaskMappedByUser/:userId', createTaskMappedByUser);
-router.put('/updateTaskMapping/:id', updateTaskMapping);
+router.post('/updateTaskMapping/:id', updateTaskMapping);
 router.get('/:userId', showCompletedTasksMapped);
 router.get('/showTasksMappedToUser/:userId', showTasksMappedToUser);
-router.put('/', update, createTaskMappedByUser)
+router.post('/updateByUser', update, createTaskMappedByUser)
 router.post('/byusermapping', createTaskByUserMapping);
 
 
