@@ -27,7 +27,9 @@ export const createTask = (req, res, next) => {
                 { _id: resp._id },
                 {
                   $set: {
-                    content: `${BASE_URL}assets/${resp._id}.${req.body.fileType}`
+                    content: `${BASE_URL}assets/${resp._id}.${
+                      req.body.fileType
+                    }`
                   }
                 },
                 { new: true },
@@ -54,17 +56,54 @@ export const createTask = (req, res, next) => {
 };
 
 export const updateTask = (req, res, next) => {
-  Task.findOneAndUpdate(
-    { _id: req.params.id },
-    req.body,
-    { upsert: false },
-    (err, resp) => {
-      if (err) {
-      } else {
-        showTasks(req, res, next);
-      }
+  if (req.body.taskType === 'Video' || req.body.taskType === 'Document') {
+    const clonedData = cloneDeep(req.body);
+    clonedData.content = '';
+    const dir = `${__dirname}/temp`;
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
     }
-  );
+    let base64Image = req.body.content.split(';base64,').pop();
+    fs.writeFile(
+      `${__dirname}/temp/${req.params.id}.${req.body.fileType}`,
+      base64Image,
+      { encoding: 'base64' },
+      (err, result) => {
+        if (err) {
+        } else {
+          Task.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+              $set: {
+                content: `${BASE_URL}assets/${req.params.id}.${
+                  req.body.fileType
+                }`
+              }
+            },
+            { new: true },
+            (err, result) => {
+              if (err) {
+              } else {
+                showTasks(req, res, next);
+              }
+            }
+          );
+        }
+      }
+    );
+  } else {
+    Task.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true, upsert: false },
+      (err, resp) => {
+        if (err) {
+        } else {
+          showTasks(req, res, next);
+        }
+      }
+    );
+  }
 };
 
 export const showTasks = (req, res, next) => {
