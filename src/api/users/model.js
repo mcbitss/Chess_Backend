@@ -23,6 +23,9 @@ const userSchema = new Schema(
     language: {
       type: String
     },
+    token: {
+      type: String
+    },
     userType: {
       type: String,
       default: 'user',

@@ -1,6 +1,7 @@
 import Task from './model';
 import { cloneDeep } from 'lodash';
 import fs from 'fs';
+import { BASE_URL } from '../../config';
 
 export const createTask = (req, res, next) => {
   if (req.body.taskType === 'Video' || req.body.taskType === 'Document') {
@@ -26,9 +27,7 @@ export const createTask = (req, res, next) => {
                 { _id: resp._id },
                 {
                   $set: {
-                    content: `http://localhost:9000/assets/${resp._id}.${
-                      req.body.fileType
-                    }`
+                    content: `${BASE_URL}assets/${resp._id}.${req.body.fileType}`
                   }
                 },
                 { new: true },

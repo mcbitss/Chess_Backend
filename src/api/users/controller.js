@@ -2,6 +2,7 @@ import Users from './model';
 import md5 from 'md5';
 import { success, notFound } from '../../services/response/';
 import EmailNotify from '../../services/notifications/notify/resetpassword';
+import { generateUUID } from '../../services/uuid';
 
 // const objId = '_id';
 
@@ -118,10 +119,18 @@ export const updatePassword = (req, res, next) => {
 export const forgetPassword = async (req, res) => {
   // console.log(req.body, '***********');
   try {
-    // const token = await generateUUID();
-    const user = await Users.findOne({ email: req.body.email });
+    const token = await generateUUID();
+    const user = await Users.findOneAndUpdate(
+      { email: req.body.email },
+      { $set: { token: token } },
+      { new: true },
+      (err, result) => {
+        if (err) {
+        }
+      }
+    );
     if (user) {
-      const notification = await EmailNotify(req.body.email);
+      const notification = await EmailNotify(req.body.email, user);
       // console.log(notification, 'ppppppppppp');
       if (notification.hasError) {
         return res.send({
@@ -164,4 +173,26 @@ export const forgetPassword = async (req, res) => {
       message: 'INTERNAL_SERVER_ERROR'
     });
   }
+};
+
+export const resetpassword = (req, res, next) => {
+  Users.findOneAndUpdate(
+    { token: req.body.token },
+    { $set: { password: req.body.password } },
+    { upsert: false, new: true },
+    (err, result) => {
+      if (err) {
+        res.send({
+          error: true,
+          message: 'Something went wrong, please try again'
+        });
+      } else {
+        res.send({
+          error: false,
+          message: 'Password Updated',
+          user: result.view()
+        });
+      }
+    }
+  );
 };
