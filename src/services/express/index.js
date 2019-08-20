@@ -25,7 +25,10 @@ export default (apiRoot, routes) => {
   app.use(apiRoot, routes);
   app.use(queryErrorHandler());
   app.use(bodyErrorHandler());
-  app.use('/assets', express.static(path.resolve('src/api/task/temp')));
+  app.use(
+    '/assets',
+    express.static(path.resolve(__dirname, '../../api/task/temp'))
+  );
 
   return app;
 };
