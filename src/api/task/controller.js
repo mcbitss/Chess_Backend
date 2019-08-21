@@ -59,44 +59,49 @@ export const updateTask = (req, res, next) => {
   if (req.body.taskType === 'Video' || req.body.taskType === 'Document') {
     const clonedData = cloneDeep(req.body);
     clonedData.content = '';
-    Task.findOneAndUpdate({ _id: req.params.id }, clonedData, (err, resp) => {
-      if (err) {
-      } else {
-        const dir = `${__dirname}/temp`;
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir);
-        }
-        console.log(resp, 'resp');
-        let base64Image = req.body.content.split(';base64,').pop();
-        fs.writeFile(
-          `${__dirname}/temp/${req.params.id}.${req.body.fileType}`,
-          base64Image,
-          { encoding: 'base64' },
-          (err, result) => {
-            if (err) {
-            } else {
-              Task.findOneAndUpdate(
-                { _id: req.params.id },
-                {
-                  $set: {
-                    content: `${BASE_URL}assets/${req.params.id}.${
-                      req.body.fileType
-                    }`
-                  }
-                },
-                { new: true },
-                (err, result) => {
-                  if (err) {
-                  } else {
-                    showTasks(req, res, next);
-                  }
-                }
-              );
-            }
+    Task.findOneAndUpdate(
+      { _id: req.params.id },
+      clonedData,
+      { new: true },
+      async (err, resp) => {
+        if (err) {
+        } else {
+          const dir = `${__dirname}/temp`;
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
           }
-        );
+          console.log(resp, 'resp');
+          let base64Image = req.body.content.split(';base64,').pop();
+          await fs.writeFile(
+            `${__dirname}/temp/${req.params.id}.${req.body.fileType}`,
+            base64Image,
+            { encoding: 'base64' },
+            (err, result) => {
+              if (err) {
+              } else {
+                Task.findOneAndUpdate(
+                  { _id: req.params.id },
+                  {
+                    $set: {
+                      content: `${BASE_URL}assets/${req.params.id}.${
+                        req.body.fileType
+                      }`
+                    }
+                  },
+                  { new: true },
+                  (err, result) => {
+                    if (err) {
+                    } else {
+                      showTasks(req, res, next);
+                    }
+                  }
+                );
+              }
+            }
+          );
+        }
       }
-    });
+    );
   } else {
     Task.findOneAndUpdate(
       { _id: req.params.id },
