@@ -1,6 +1,7 @@
 import TaskMapping from './model';
 import Task from '../task/model';
 import { remove, maxBy } from 'lodash';
+import { showTasks } from '../task/controller';
 
 export const createTaskMapped = (req, res, next) => {
   TaskMapping.find({
@@ -203,7 +204,10 @@ export const createTaskByUserMapping = (req, res, next) => {
                       username: user,
                       task: task._id,
                       sequencenumber: maxSequencceNumber + counter,
-                      taskStatus: !obj && ind === 0 ? 'Assigned' : 'Upcoming'
+                      taskStatus:
+                        (!obj || Object.keys(obj).length === 0) && ind === 0
+                          ? 'Assigned'
+                          : 'Upcoming'
                     });
                     counter += 1;
                   });
@@ -237,7 +241,7 @@ export const createTaskByUserMapping = (req, res, next) => {
         );
       });
     });
-    res.send(userTasks);
+    showTasksMapped(req, res, next);
   });
 };
 

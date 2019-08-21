@@ -59,38 +59,44 @@ export const updateTask = (req, res, next) => {
   if (req.body.taskType === 'Video' || req.body.taskType === 'Document') {
     const clonedData = cloneDeep(req.body);
     clonedData.content = '';
-    const dir = `${__dirname}/temp`;
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
-    let base64Image = req.body.content.split(';base64,').pop();
-    fs.writeFile(
-      `${__dirname}/temp/${req.params.id}.${req.body.fileType}`,
-      base64Image,
-      { encoding: 'base64' },
-      (err, result) => {
-        if (err) {
-        } else {
-          Task.findOneAndUpdate(
-            { _id: req.params.id },
-            {
-              $set: {
-                content: `${BASE_URL}assets/${req.params.id}.${
-                  req.body.fileType
-                }`
-              }
-            },
-            { new: true },
-            (err, result) => {
-              if (err) {
-              } else {
-                showTasks(req, res, next);
-              }
-            }
-          );
+    Task.findOneAndUpdate({ _id: req.params.id }, clonedData, (err, resp) => {
+      if (err) {
+      } else {
+        const dir = `${__dirname}/temp`;
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir);
         }
+        console.log(resp, 'resp');
+        let base64Image = req.body.content.split(';base64,').pop();
+        fs.writeFile(
+          `${__dirname}/temp/${req.params.id}.${req.body.fileType}`,
+          base64Image,
+          { encoding: 'base64' },
+          (err, result) => {
+            if (err) {
+            } else {
+              Task.findOneAndUpdate(
+                { _id: req.params.id },
+                {
+                  $set: {
+                    content: `${BASE_URL}assets/${req.params.id}.${
+                      req.body.fileType
+                    }`
+                  }
+                },
+                { new: true },
+                (err, result) => {
+                  if (err) {
+                  } else {
+                    showTasks(req, res, next);
+                  }
+                }
+              );
+            }
+          }
+        );
       }
-    );
+    });
   } else {
     Task.findOneAndUpdate(
       { _id: req.params.id },
@@ -112,31 +118,6 @@ export const showTasks = (req, res, next) => {
     .exec((err, resp) => {
       if (err) {
       } else {
-        // const updatedResult = resp.map(tasks => {
-        //   return new Promise(resolve => {
-        //     if (tasks.taskType === 'Video' || tasks.taskType === 'Document') {
-        //       const base64 = fs.readFileSync(
-        //         `${__dirname}/temp/${tasks._id}.${tasks.fileType}`,
-        //         {
-        //           encoding: 'base64'
-        //         }
-        //       );
-        //       if (tasks.taskType === 'Video') {
-        //         tasks.content = `data:video/${tasks.fileType};base64,${base64}`;
-        //         resolve(tasks);
-        //       }
-        //     }
-        //     resolve(tasks);
-        //   });
-        // });
-        // Promise.all(updatedResult).then(updatedData => {
-        //   console.log(updatedData, 'updatedData');
-        //   res.send({
-        //     error: false,
-        //     message: 'fetch success',
-        //     result: updatedData
-        //   });
-        // });
         res.send({
           error: false,
           message: 'fetch success',
