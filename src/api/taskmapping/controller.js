@@ -1,17 +1,20 @@
 import TaskMapping from './model';
 import Task from '../task/model';
-import { remove, maxBy } from 'lodash';
+import { remove, maxBy, cloneDeep } from 'lodash';
 import { showTasks } from '../task/controller';
 
 export const createTaskMapped = (req, res, next) => {
   TaskMapping.find({
     username: req.body.username,
-    taskStatus: { $in: ['Upcoming', 'Assigned'] }
+    taskStatus: { $in: ['Assigned'] }
   })
     .sort({ sequencenumber: -1 })
     .exec()
     .then(resp => {
-      TaskMapping.create(req.body, (err, resp) => {
+      console.log(resp, 'resp');
+      const clonedObj = cloneDeep(req.body);
+      clonedObj.taskStatus = resp.length === 0 ? 'Assigned' : 'Upcoming';
+      TaskMapping.create(clonedObj, (err, resp) => {
         if (err) {
           console.log(err, 'err');
         } else {
