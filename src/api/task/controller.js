@@ -132,6 +132,21 @@ export const showTasks = (req, res, next) => {
     });
 };
 
+export const showAllTasks = (req, res, next) => {
+  Task.find({})
+    .sort({ _id: -1 })
+    .exec((err, resp) => {
+      if (err) {
+      } else {
+        res.send({
+          error: false,
+          message: 'fetch success',
+          result: resp
+        });
+      }
+    });
+};
+
 export const checkAndInsertBulk = (req, res, next) => {
   const duplicatesFound = [];
   const promises = req.body.map(eachTask => {

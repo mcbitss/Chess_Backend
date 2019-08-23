@@ -28,11 +28,53 @@ export const updateTaskMapping = (req, res, next) => {
   TaskMapping.findOneAndUpdate(
     { _id: req.params.id },
     req.body,
-    { upsert: false },
+    { new: true, upsert: false },
     (err, resp) => {
       if (err) {
+        console.log(err);
       } else {
-        showTasksMapped(req, res, next);
+        TaskMapping.findOne({
+          username: req.body.username,
+          taskStatus: 'Assigned'
+        }).exec((err, response) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(response, 'response');
+            if (
+              !response ||
+              Object.keys(response).length === 0 ||
+              response === null
+            ) {
+              TaskMapping.findOne({
+                sequencenumber: req.body.sequencenumber + 1
+              }).exec((err, result) => {
+                if (err) {
+                } else {
+                  if (result.taskStatus === 'Upcoming') {
+                    TaskMapping.findOneAndUpdate(
+                      {
+                        sequencenumber: req.body.sequencenumber + 1
+                      },
+                      { $set: { taskStatus: 'Assigned' } },
+                      { new: true }
+                    ).exec((err, result) => {
+                      if (err) {
+                        console.log(err, 'err');
+                      } else {
+                        showTasksMapped(req, res, next);
+                      }
+                    });
+                  } else {
+                    showTasksMapped(req, res, next);
+                  }
+                }
+              });
+            } else {
+              showTasksMapped(req, res, next);
+            }
+          }
+        });
       }
     }
   );
