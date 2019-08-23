@@ -14,7 +14,7 @@ router.get('/createTaskMappedByUser/:userId', createTaskMappedByUser);
 router.post('/updateTaskMapping/:id', updateTaskMapping);
 router.get('/:userId', showCompletedTasksMapped);
 router.get('/showTasksMappedToUser/:userId', showTasksMappedToUser);
-router.post('/updateByUser', update, createTaskMappedByUser)
+router.put('/', update, createTaskMappedByUser)
 router.post('/byusermapping', createTaskByUserMapping);
 
 
