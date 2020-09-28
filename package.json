@@ -4,7 +4,7 @@
   "description": "Students Project",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/"
+    "dev": "nodemon ./src/"
   },
   "author": "Venkatesh Reddy Kalikiri",
   "license": "ISC",

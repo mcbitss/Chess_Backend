@@ -33,9 +33,9 @@ const config = {
     BASE_URL: requireProcessEnv('BASE_URL_PROD'),
     mongo: {
       options: {
-        db: {
-          safe: true
-        }
+        // db: {
+        //   safe: true
+        // }
       }
     }
   },
