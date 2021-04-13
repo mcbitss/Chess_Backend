@@ -20,7 +20,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
     "bcrypt": "^3.0.6",
-    "bodymen": "^1.1.0",
+    "bodymen": "^1.1.1",
     "compression": "^1.7.3",
     "cors": "^2.8.4",
     "docx": "^4.4.0",
